@@ -35,11 +35,13 @@ import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent;
 import org.hl7.fhir.dstu3.model.PractitionerRole;
 import org.hl7.fhir.dstu3.model.RelatedPerson;
+import org.hl7.fhir.dstu3.model.Resource;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.primitive.DateDt;
 import ca.uhn.fhir.model.primitive.StringDt;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 /**
@@ -61,7 +63,8 @@ public class App
             
         // methods for the different exercises
         createPatientAndLaborWard(ctx, client);
-        //getAllPatientsNames(client);
+//        getAllPatientsNames(client);
+        
     }
     
     public static void createPatientAndLaborWard(FhirContext ctx,IGenericClient client )
@@ -69,12 +72,12 @@ public class App
      // Create a patient object
         Patient patient = new Patient();
         // random number for the ID
-        double patID = Math.random()*100;
+        int patID = (int)(Math.random()*10000);
        
         //add an ID
         patient.addIdentifier()
            .setSystem("http://www.kh-hh.de/mio/patients")
-           .setValue(Double.toString((int)patID)); 
+           .setValue(Integer.toString((int)patID)); 
         // add patients gender
         patient.setGender(AdministrativeGender.FEMALE);
         
@@ -143,6 +146,10 @@ public class App
     		.setSystem("http://hl7.org/fhir/organization-type");
     	krankenhaus.setName("MIO-Krankenhaus");
     	krankenhaus.addAddress().setCity("Lübeck");
+    	int idNr = (int)(Math.random()*10000);
+        krankenhaus.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/house")
+            .setValue(Integer.toString((int)idNr));
     	krankenhaus.setActive(true);
     	
     	//Textuelle Zusammenfassung
@@ -156,6 +163,10 @@ public class App
     	geburtsstation.setName("Geburtsstation");
     	geburtsstation.setPartOfTarget(krankenhaus);
     	geburtsstation.addType().addCoding().setCode("dept").setSystem("http://hl7.org/fhir/organization-type");
+    	idNr = (int)(Math.random()*10000);
+        geburtsstation.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/dept")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammenfassung
     	na = new Narrative();
@@ -165,6 +176,10 @@ public class App
     	    	
     	//create doctor
     	Practitioner pracDoc = new Practitioner();
+    	idNr = (int)(Math.random()*10000);
+        pracDoc.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/practitioner")
+            .setValue(Integer.toString((int)idNr)); 
     	pracDoc.addName().addGiven("Mio").setFamily("Lundin").addPrefix("Dr.");
     	pracDoc.setGender(AdministrativeGender.MALE);
     	//set qualification doctor of med
@@ -184,6 +199,10 @@ public class App
     	rolDoc.addCode().addCoding().setCode("doctor").setSystem("http://hl7.org/fhir/practitioner-role").setDisplay("Doctor");
     	rolDoc.setOrganizationTarget(geburtsstation);
     	rolDoc.setPractitionerTarget(pracDoc);
+    	idNr = (int)(Math.random()*10000);
+    	rolDoc.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/practitionerRole")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -195,6 +214,10 @@ public class App
     	Practitioner pracNur = new Practitioner();
     	pracNur.addName().addGiven("Jum-Jum").setFamily("Svendson");
     	pracNur.setGender(AdministrativeGender.MALE);
+    	idNr = (int)(Math.random()*10000);
+        pracNur.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/practitioner")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -207,6 +230,10 @@ public class App
     	rolNur.addCode().addCoding().setCode("nurse").setSystem("http://hl7.org/fhir/practitioner-role").setDisplay("Nurse");
     	rolNur.setOrganizationTarget(geburtsstation);
     	rolNur.setPractitionerTarget(pracNur);
+    	idNr = (int)(Math.random()*10000);
+        rolNur.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/practitionerRole")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -220,6 +247,10 @@ public class App
     	Patient erika = new Patient();
     	erika.addName().addGiven("Erika").setFamily("Buddenbrook");
     	erika.setGender(AdministrativeGender.FEMALE);
+    	idNr = (int)(Math.random()*10000);
+        erika.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/patient")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -236,6 +267,10 @@ public class App
     								.setSystem("http://hl7.org/fhir/v3/RoleCode")));
     	relMom.addName().setFamily("Buddenbrook").setUse(NameUse.OFFICIAL).addGiven("Antonie");
     	relMom.addName().setUse(NameUse.NICKNAME).addGiven("Tony");
+    	idNr = (int)(Math.random()*10000);
+        relMom.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/relatedPerson")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -250,6 +285,10 @@ public class App
     	aufenthalt.setPeriod(new Period().setStart(new GregorianCalendar(1846,9,1).getTime()));
     	aufenthalt.setServiceProviderTarget(geburtsstation);
     	aufenthalt.addReason().addCoding().setCode("386216000").setSystem("http://snomed.info/sct").setDisplay("Childbirth");
+    	idNr = (int)(Math.random()*10000);
+        aufenthalt.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/Encounter")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -265,6 +304,10 @@ public class App
     	aufenthaltKind.setServiceProviderTarget(geburtsstation);
     	aufenthaltKind.addReason().addCoding().setCode("3950001").setSystem("http://snomed.info/sct").setDisplay("Birth");
     	aufenthaltKind.setPartOfTarget(aufenthalt);
+    	idNr = (int)(Math.random()*10000);
+        aufenthaltKind.addIdentifier()
+            .setSystem("http://www.kh-hh.de/mio/Encounter")
+            .setValue(Integer.toString((int)idNr));
     	
     	//Textuelle Zusammmenfassung
     	na = new Narrative();
@@ -317,8 +360,35 @@ public class App
 					e.printStackTrace();
 				}
 		}
+    	
+    // Erzeugen sie alle Ressourcen auf dem Testserver
+//    	createResource(client,krankenhaus);
+//    	createResource(client, geburtsstation);
+//    	createResource(client, pracDoc);
+//    	createResource(client, pracNur);
+//    	createResource(client, rolDoc);
+//    	createResource(client, rolNur);
+//    	createResource(client, patient);
+//    	createResource(client, erika);
+//    	createResource(client, relMom);
+//    	createResource(client, aufenthalt);
+//    	createResource(client, aufenthaltKind);
+    	
     }
     
+    private static void createResource(IGenericClient client, Resource res)
+    {
+    	MethodOutcome outcome = client.create()
+    			   .resource(res)
+    			   .prettyPrint()
+    			   .encodedJson()
+    			   .execute();
+    	
+    	System.out.println("Got ID of created Resource: " + outcome.getId());
+    	
+    }
+    
+   
     private static void getAllPatientsNames(IGenericClient client)
     {
     	
@@ -327,7 +397,8 @@ public class App
       Bundle results = client.search()
       		.forResource(Patient.class)
       		.returnBundle(org.hl7.fhir.dstu3.model.Bundle.class)
-      		.elementsSubset("family")
+      		//.elementsSubset("family")
+      		.count(20)
       		.execute(); 
     	// Get patients names 
       List<String> patientsNames =new ArrayList<String>();
